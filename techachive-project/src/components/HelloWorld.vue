@@ -1,19 +1,7 @@
 <template>
-  <div id="app" >
+  <div id="app"  >
     <!-- Navigationsleiste -->
-    <nav>
-      <div class="menu">
-        <p class="website_name">LOGO</p>
-        <div class="menu_links">
-          <a href="#" class="link">about</a>
-          <a href="#" class="link">projects</a>
-          <a href="#" class="link">contacts</a>
-        </div>
-        <div class="menu_icon">
-          <span class="icon"></span>
-        </div>
-      </div>
-    </nav>
+
 
     <!-- Wrapper für die Szene und den Text -->
     <div class="wrapper">
@@ -713,6 +701,6 @@ nav .menu .menu_icon:hover .icon:after {
 }
 
 .wrapper{
-  width: 1300px;
+  width: 1300px !important;
 }
 </style>
