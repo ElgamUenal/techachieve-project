@@ -6,8 +6,8 @@
         <p class="website_name">LOGO</p>
         <div class="menu_links">
           <router-link to="/" class="link">Home</router-link>
+          <router-link to="/projects" class="link">Nachhilfe</router-link>
           <router-link to="/mitschriften" class="link">Mitschriften</router-link>
-          <router-link to="/projects" class="link">Projects</router-link>
           <router-link to="/contacts" class="link">Contacts</router-link>
         </div>
       </div>
