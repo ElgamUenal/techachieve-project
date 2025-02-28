@@ -6,7 +6,7 @@ import Nachhilfe from '@/components/Nachhilfe.vue';
 const routes = [
   { path: '/', component: HelloWorld }, // HelloWorld wird nur für die Startseite angezeigt
   { path: '/mitschriften', component: Mitschriften },
-  {path: '/nachhilfe', component: Nachhilfe }
+  {path: '/Nachhilfe', component: Nachhilfe }
 ];
 
 const router = createRouter({
