@@ -37,7 +37,7 @@
         <!-- Textbereich -->
         <div class="text">
           <article>
-            <p>Uh oh! Looks like you got lost. <br>Go back to the homepage if you dare!</p>
+            <p>Uh oh! Looks like you got lost. <br>Go back to the homepage if you !</p>
             <button @click="goHome">I dare!</button>
           </article>
         </div>
