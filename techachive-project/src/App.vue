@@ -3,7 +3,7 @@
     <!-- Navigationsleiste -->
     <nav>
       <div class="menu">
-        <p class="website_name">LOGO</p>
+        <p class="website_name">TechAchieve</p>
         <div class="menu_links">
           <router-link to="/" class="link">Home</router-link>
           <router-link to="/Nachhilfe" class="link">Nachhilfe</router-link>
@@ -57,12 +57,14 @@ nav {
   font-size: 24px;
   font-weight: bold;
   margin: 0;
+  margin-right: 40px; 
 }
 
 .menu_links {
   display: flex;
   gap: 20px;
 }
+
 
 .link {
   color: #fff;
