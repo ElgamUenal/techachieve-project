@@ -5,12 +5,12 @@
         <!-- Ordner 1 -->
         <div class="folder-container" @click="goToPage('/klasse1')">
           <div class="folder">
-            <div class="folder-back" :style="folderStyle('#695681')">
+            <div class="folder-back" :style="folderStyle('#D20909')">
               <div class="paper"></div>
               <div class="paper"></div>
               <div class="paper"></div>
-              <div class="folder-front" :style="folderStyle('#36184F')"></div>
-              <div class="folder-front folder-front-right" :style="folderStyle('#36184F')"></div>
+              <div class="folder-front" :style="folderStyle('#D20909')"></div>
+              <div class="folder-front folder-front-right" :style="folderStyle('#D20909')"></div>
             </div>
           </div>
           <p class="folder-label">Klasse 1</p>
@@ -19,12 +19,12 @@
         <!-- Ordner 2 -->
         <div class="folder-container" @click="goToPage('/klasse2')">
           <div class="folder">
-            <div class="folder-back" :style="folderStyle('#8077EA')">
+            <div class="folder-back" :style="folderStyle('#BE0009')">
               <div class="paper"></div>
               <div class="paper"></div>
               <div class="paper"></div>
-              <div class="folder-front" :style="folderStyle('#EB73FF')"></div>
-              <div class="folder-front folder-front-right" :style="folderStyle('#EB73FF')"></div>
+              <div class="folder-front" :style="folderStyle('#BE0009')"></div>
+              <div class="folder-front folder-front-right" :style="folderStyle('#BE0009')"></div>
             </div>
           </div>
           <p class="folder-label">Klasse 2</p>
@@ -33,12 +33,12 @@
         <!-- Ordner 3 -->
         <div class="folder-container" @click="goToPage('/klasse3')">
           <div class="folder">
-            <div class="folder-back" :style="folderStyle('#FFEDC0')">
+            <div class="folder-back" :style="folderStyle('#B20000')">
               <div class="paper"></div>
               <div class="paper"></div>
               <div class="paper"></div>
-              <div class="folder-front" :style="folderStyle('#FF9D87')"></div>
-              <div class="folder-front folder-front-right" :style="folderStyle('#FF9D87')"></div>
+              <div class="folder-front" :style="folderStyle('#B20000')"></div>
+              <div class="folder-front folder-front-right" :style="folderStyle('#B20000')"></div>
             </div>
           </div>
           <p class="folder-label">Klasse 3</p>
@@ -47,12 +47,12 @@
         <!-- Ordner 4 -->
         <div class="folder-container" @click="goToPage('/klasse4')">
           <div class="folder">
-            <div class="folder-back" :style="folderStyle('#FB8A8A')">
+            <div class="folder-back" :style="folderStyle('#97000D')">
               <div class="paper"></div>
               <div class="paper"></div>
               <div class="paper"></div>
-              <div class="folder-front" :style="folderStyle('#FF6B6B')"></div>
-              <div class="folder-front folder-front-right" :style="folderStyle('#FF6B6B')"></div>
+              <div class="folder-front" :style="folderStyle('#97000D')"></div>
+              <div class="folder-front folder-front-right" :style="folderStyle('#97000D')"></div>
             </div>
           </div>
           <p class="folder-label">Klasse 4</p>
@@ -61,12 +61,12 @@
         <!-- Ordner 5 -->
         <div class="folder-container" @click="goToPage('/klasse5')">
           <div class="folder">
-            <div class="folder-back" :style="folderStyle('#36DE9B')">
+            <div class="folder-back" :style="folderStyle('#660019')">
               <div class="paper"></div>
               <div class="paper"></div>
               <div class="paper"></div>
-              <div class="folder-front" :style="folderStyle('#1E9D6A')"></div>
-              <div class="folder-front folder-front-right" :style="folderStyle('#1E9D6A')"></div>
+              <div class="folder-front" :style="folderStyle('#660019')"></div>
+              <div class="folder-front folder-front-right" :style="folderStyle('#660019')"></div>
             </div>
           </div>
           <p class="folder-label">Klasse 5</p>
