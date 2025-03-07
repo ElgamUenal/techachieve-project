@@ -94,7 +94,7 @@
   };
   </script>
   
-  <style scoped>
+<style scoped>
   /* Globale Styles */
   body {
     background-color: black;
