@@ -41,7 +41,7 @@
     methods: {
       // Lade die Fächer von der API
       async ladeFaecher() {
-        const response = await fetch('http://localhost:3000/api/faecher');
+        const response = await fetch('http://localhost:3000/faecher');
         const faecher = await response.json();
         this.faecher = faecher;
       },
@@ -49,7 +49,7 @@
       // Lade die Themen basierend auf dem ausgewählten Fach
       async ladeThemen() {
         if (!this.selectedFach) return;
-        const response = await fetch(`http://localhost:3000/api/themen/${this.selectedFach}`);
+        const response = await fetch(`http://localhost:3000/themen/${this.selectedFach}`);
         const themen = await response.json();
         this.themen = themen;
       },
@@ -57,7 +57,7 @@
       // Lade die Materialien basierend auf dem ausgewählten Thema
       async ladeMaterialien() {
         if (!this.selectedThema) return;
-        const response = await fetch(`http://localhost:3000/api/materialien/${this.selectedThema}`);
+        const response = await fetch(`http://localhost:3000/materialien/${this.selectedThema}`);
         const materialien = await response.json();
         this.materialien = materialien;
       }
@@ -70,6 +70,9 @@
   
   <style scoped>
   /* Füge hier deine Styles hinzu */
+  body{
+    color: white;
+  }
   .container {
     max-width: 800px;
     margin: 0 auto;

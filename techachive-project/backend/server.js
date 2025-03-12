@@ -1,6 +1,7 @@
 import express from 'express';
-import { Pool } from 'pg';
-import cors from 'cors'; // CORS importieren
+import cors from 'cors';
+import pkg from 'pg';  // Importiere pg als Default
+const { Pool } = pkg;  // Hole die Pool-Klasse
 
 const app = express();
 const port = 3000;
@@ -14,7 +15,7 @@ const pool = new Pool({
     port: 5432,
 });
 
-app.use(cors()); // CORS-Middleware einfügen
+app.use(cors());
 app.use(express.json());
 
 // Alle Fächer abrufen

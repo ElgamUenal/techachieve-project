@@ -110,8 +110,9 @@
               <div class="right" data-title="Mathe">
                 <div class="cover"></div>
                 <div class="contents">
-                  <h1>Chapter 1</h1>
-                  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                  <h1>Mathe</h1>
+                  <button @click="goToMathe">Zur Mathe-Seite</button>
+
                 </div>
               </div>
               <div class="top"></div>
@@ -269,8 +270,16 @@
   
   <script>
   export default {
-    name: 'Book'
-  };
+  name: 'Book', // Der Name der Komponente
+
+  methods: {
+    // Methode zum Navigieren zur Mathe-Seite
+    goToMathe() {
+      this.$router.push('/mathe'); // Navigiert zur Mathe-Seite
+    }
+  }
+};
+
   </script>
   
   <style scoped>
