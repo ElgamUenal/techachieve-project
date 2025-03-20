@@ -4,45 +4,17 @@
   
       <!-- Suchfeld -->
       <div class="search-container">
-        <input
-          type="number"
-          placeholder="Maximaler Preis (z.B. 10)"
-          v-model="search"
-        />
+        <input type="number" placeholder="Maximaler Preis (€)" v-model="search" />
         <button @click="search">Suchen</button>
       </div>
   
       <h2>📖 Nachhilfe-Angebot erstellen</h2>
       <form @submit.prevent="handleSubmitAngebot">
-        <input
-          type="text"
-          placeholder="Name"
-          v-model="name"
-          required
-        />
-        <input
-          type="text"
-          placeholder="Fach"
-          v-model="fach"
-          required
-        />
-        <input
-          type="number"
-          placeholder="Preis (€)"
-          v-model="preis"
-          required
-        />
-        <input
-          type="number"
-          placeholder="Stunden"
-          v-model="stunden"
-          required
-        />
-        <textarea
-          placeholder="Beschreibung"
-          v-model="beschreibung"
-          required
-        />
+        <input type="text" placeholder="Name" v-model="name" required />
+        <input type="text" placeholder="Fach" v-model="fach" required />
+        <input type="number" placeholder="Preis (€)" v-model="preis" required />
+        <input type="number" placeholder="Stunden" v-model="stunden" required />
+        <textarea placeholder="Beschreibung" v-model="beschreibung" required />
         <button type="submit">Angebot hinzufügen</button>
       </form>
   
@@ -69,9 +41,8 @@
               <button class="delete-btn" @click="handleDeleteAngebot(angebot.id)">
                 Löschen
               </button>
-              <!-- Button zum Reduzieren der Stunden -->
-              <button class="reduce-btn" @click="handleReduceStunden(angebot.id)">
-                Stunden reduzieren
+              <button class="request-btn" @click="handleRequestNachhilfe(angebot.id, angebot.stunden)">
+                Nachhilfe anfragen
               </button>
             </td>
           </tr>
@@ -138,24 +109,24 @@
           })
           .catch((error) => console.error("Fehler beim Löschen:", error));
       },
-      handleReduceStunden(id) {
-        const stunden = prompt("Wie viele Studen willst du Nachhilfe?");
-       
-        if (stunden && !isNaN(stunden) && parseInt(stunden) > 0) {
+      handleRequestNachhilfe(id, verfügbareStunden) {
+        const stunden = prompt(`Wie viele Stunden möchtest du buchen? (Max: ${verfügbareStunden})`);
+  
+        if (stunden && !isNaN(stunden) && parseInt(stunden) > 0 && parseInt(stunden) <= verfügbareStunden) {
           axios
             .put(`http://localhost:3000/angebote/${id}/reduce`, {
-              stunden: parseInt(stunden)
+              stunden: verfügbareStunden - parseInt(stunden)
             })
             .then((response) => {
               this.fetchAngebote();
-              alert(response.data.message);
+              alert(`Du hast erfolgreich ${stunden} Stunden gebucht.`);
             })
             .catch((error) => {
-              console.error("Fehler beim Reduzieren der Stunden:", error);
-              alert("Fehler beim Reduzieren der Stunden.");
+              console.error("Fehler bei der Anfrage:", error);
+              alert("Fehler bei der Anfrage.");
             });
         } else {
-          alert("Bitte eine gültige Zahl für die Stunden angeben.");
+          alert("Bitte eine gültige Anzahl von Stunden eingeben.");
         }
       }
     },
@@ -166,18 +137,6 @@
   </script>
   
   <style scoped>
-  body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f9;
-    margin: 0;
-    padding: 20px;
-  }
-  
-  h1,
-  h2 {
-    color: #333;
-  }
-  
   .container {
     background: white;
     padding: 20px;
@@ -185,8 +144,9 @@
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }
   
-  form {
-    margin-bottom: 20px;
+  h1,
+  h2 {
+    color: #333;
   }
   
   input,
@@ -199,7 +159,7 @@
   }
   
   button {
-    background-color: #28a743;
+    background-color: #28a745;
     color: white;
     padding: 10px 20px;
     border: none;
@@ -228,19 +188,20 @@
     background-color: #f8f9fa;
   }
   
-  .delete-btn,
-  .reduce-btn {
-    background-color: #dc3343;
-    color: white;
-    padding: 3px 10px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
+  .delete-btn {
+    background-color: #dc3545;
   }
   
-  .delete-btn:hover,
-  .reduce-btn:hover {
+  .request-btn {
+    background-color: #007bff;
+  }
+  
+  .delete-btn:hover {
     background-color: #c82333;
+  }
+  
+  .request-btn:hover {
+    background-color: #0056b3;
   }
   
   .search-container {
@@ -259,3 +220,4 @@
     padding: 10px 20px;
   }
   </style>
+  

@@ -9,8 +9,8 @@
           <router-link to="/Nachhilfe" class="link">Nachhilfe</router-link>
           <router-link to="/mitschriften" class="link">Mitschriften</router-link>
           <router-link to="/contacts" class="link">About</router-link>
-          <router-link to="/faecher" class="link">faecher</router-link>
-
+          <router-link to="/faecher" class="link">faecher</router-link> 
+          <router-link to="/angebot" class="link">Angebot</router-link>        
         </div>
       </div>
     </nav>
