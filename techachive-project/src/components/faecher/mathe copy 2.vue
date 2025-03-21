@@ -16,7 +16,7 @@
     <!-- Liste der Materialien -->
     <h2><i class="fas fa-folder"></i> Materialien</h2>
     <ul>
-      <li v-for="material in materialien" :key="material.id" @click="oeffnePDF(material.dateipfad)">
+      <li v-for="material in materialien" :key="material.id" @click="oeffnePDF(material.link)">
         <i class="fas fa-file-alt"></i> {{ material.name }} - {{ material.typ }}
       </li>
     </ul>
@@ -41,73 +41,55 @@ export default {
     };
   },
   methods: {
-    // Lade die Themen für Mathematik
-    async ladeThemen() {
-      this.loading = true;
-      this.errorMessage = null;
-      try {
-        const response = await fetch('http://localhost:3000/themen/1'); // Hier gehe ich davon aus, dass 1 die ID für Mathematik ist
-        if (!response.ok) {
-          throw new Error('Fehler beim Laden der Themen');
-        }
-        const themen = await response.json();
-        this.themen = themen;
-      } catch (error) {
-        this.errorMessage = error.message;
-      } finally {
-        this.loading = false;
+  // Lade die Themen für Mathematik
+  async ladeThemen() {
+    this.loading = true;
+    this.errorMessage = null;
+    try {
+      const response = await fetch('http://localhost:3000/themen/1'); // Hier gehe ich davon aus, dass 1 die ID für Mathematik ist
+      if (!response.ok) {
+        throw new Error('Fehler beim Laden der Themen');
       }
-    },
-
-    // Lade die Materialien basierend auf dem ausgewählten Thema
-    async ladeMaterialien() {
-      if (!this.selectedThema) return;
-
-      console.log('Lade Materialien für Thema:', this.selectedThema);
-
-      this.loading = true;
-      this.errorMessage = null;
-      try {
-        const response = await fetch('http://localhost:3000/api/materialien');
-        if (!response.ok) {
-          throw new Error(`Fehler beim Laden der Materialien: ${response.status} ${response.statusText}`);
-        }
-        const materialien = await response.json();
-
-        console.log('Geladene Materialien:', materialien); // Alle Materialien ausgeben
-
-        // Überprüfe die Struktur der Materialien
-        materialien.forEach(material => {
-          console.log('Material:', material);  // Material im Detail ausgeben
-        });
-
-        // Jetzt verwenden wir 'thema_id' anstelle von 'themaId'
-        this.materialien = materialien.filter(material => {
-          console.log('Vergleiche thema_id:', material.thema_id, 'mit selectedThema:', this.selectedThema);
-          return material.thema_id && Number(material.thema_id) === Number(this.selectedThema);  // Nur Materiale mit thema_id filtern
-        });
-
-        console.log('Gefilterte Materialien:', this.materialien);
-      } catch (error) {
-        console.error('Fehler:', error);
-        this.errorMessage = error.message;
-      } finally {
-        this.loading = false;
-      }
-    },
-
-    // Öffne die PDF-Datei in einem neuen Tab
-    oeffnePDF(dateipfad) {
-      if (dateipfad) {
-        console.log('Dateipfad zum Öffnen:', dateipfad);  // Zum Debuggen den Dateipfad in der Konsole anzeigen
-
-        // Öffne den Dateipfad direkt im neuen Tab
-        window.open(dateipfad, '_blank');
-      } else {
-        this.errorMessage = "Keine Datei verfügbar.";
-      }
+      const themen = await response.json();
+      this.themen = themen;
+    } catch (error) {
+      this.errorMessage = error.message;
+    } finally {
+      this.loading = false;
     }
   },
+
+  // Lade die Materialien basierend auf dem ausgewählten Thema
+  async ladeMaterialien() {
+    if (!this.selectedThema) return;
+
+    this.loading = true;
+    this.errorMessage = null;
+    try {
+      // Beispiel-Daten (können durch eine API-Abfrage ersetzt werden)
+      const materialien = [
+        { id: 1, name: "Übung 1", typ: "Übung", link: "/materialen/Lineare_Funktionen.pdf", themaId: 1 },
+        { id: 2, name: "Theorieblatt", typ: "Theorie", link: "", themaId: 2 },
+      ];
+
+      // Filtere die Materialien basierend auf dem ausgewählten Thema
+      this.materialien = materialien.filter(material => material.themaId === this.selectedThema);
+    } catch (error) {
+      this.errorMessage = error.message;
+    } finally {
+      this.loading = false;
+    }
+  },
+
+  // Öffne die PDF-Datei in einem neuen Tab
+  oeffnePDF(link) {
+    if (link) {
+      window.open(link, '_blank');
+    } else {
+      this.errorMessage = "Keine Datei verfügbar.";
+    }
+  }
+},
   mounted() {
     this.ladeThemen(); // Lade die Themen beim ersten Laden der Seite
   },

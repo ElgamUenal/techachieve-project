@@ -278,7 +278,21 @@ app.get('/validateToken', (req, res) => {
 
 
 
-
+  
+  // API-Endpunkt für Materialien
+  app.get('/api/materialien', async (req, res) => {
+    try {
+      // Datenbankabfrage, um alle Materialien zu erhalten
+      const query = 'SELECT * FROM materialien'; // Passe den Tabellennamen an
+      const result = await pool.query(query);
+  
+      // Sende die Materialien als JSON
+      res.json(result.rows);
+    } catch (err) {
+      console.error('Fehler bei der Datenbankabfrage:', err);
+      res.status(500).json({ error: 'Fehler beim Laden der Materialien' });
+    }
+  });
 
 app.listen(port, () => {
     console.log(`Server läuft auf http://localhost:${port}`);
