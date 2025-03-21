@@ -20,8 +20,8 @@ const app = express();
 const pool = new Pool({
     user: 'postgres',
     host: 'localhost',
-    database: 'htl_datenbank',
-    password: 'dina',
+    database: 'users',
+    password: 'postgres',
     port: 5432,
 });
 
