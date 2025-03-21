@@ -1,11 +1,13 @@
+// Statt require()
 import express from 'express';
 import cors from 'cors';
-import pkg from 'pg';  // Importiere pg als Default
-const { Pool } = pkg;  // Hole die Pool-Klasse
+import pkg from 'pg';  // Standardimport für CommonJS-Module
+const { Pool } = pkg;  // Extrahiere den Pool aus dem Standardimport
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+
 
 const app = express();
-const port = 3000;
-
 // PostgreSQL-Verbindung
 const pool = new Pool({
     user: 'postgres',
@@ -17,6 +19,8 @@ const pool = new Pool({
 
 app.use(cors());
 app.use(express.json());
+const port = 3000;
+
 
 // Alle Fächer abrufen
 app.get('/faecher', async (req, res) => {
@@ -205,6 +209,77 @@ app.get('/angebote', async (req, res) => {
   });
   
   
+  const SECRET_KEY = 'dein_geheimer_schluessel';
+
+  app.post('/register', async (req, res) => {
+    const { username, email, password } = req.body;
+    const hashedPassword = bcrypt.hashSync(password, 10);
+
+    try {
+        const result = await pool.query(
+            'INSERT INTO users (username, email, password_hash) VALUES ($1, $2, $3) RETURNING id',
+            [username, email, hashedPassword]
+        );
+        res.json({ success: true, userId: result.rows[0].id });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: 'Fehler bei der Registrierung' });
+    }
+});
+
+
+
+
+app.post('/login', async (req, res) => {
+    const { username, password } = req.body;
+
+    try {
+        const userResult = await pool.query('SELECT * FROM users WHERE username = $1', [username]);
+        if (userResult.rows.length === 0) {
+            return res.status(401).json({ success: false, message: 'Falsche Anmeldedaten' });
+        }
+
+        const user = userResult.rows[0];
+        if (!bcrypt.compareSync(password, user.password_hash)) {
+            return res.status(401).json({ success: false, message: 'Falsches Passwort' });
+        }
+
+        const token = jwt.sign({ userId: user.id }, SECRET_KEY, { expiresIn: '1h' });
+        res.json({ success: true, userId: user.id, token });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: 'Fehler beim Login' });
+    }
+});
+
+app.get('/users', async (req, res) => {
+    try {
+        const result = await pool.query('SELECT id, username FROM users');
+        res.json({ success: true, users: result.rows });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: 'Fehler beim Abrufen der Benutzer' });
+    }
+});
+
+app.get('/validateToken', (req, res) => {
+    const token = req.headers.authorization?.split(' ')[1];
+    if (!token) {
+        return res.status(401).json({ success: false });
+    }
+
+    try {
+        const decoded = jwt.verify(token, SECRET_KEY);
+        res.json({ success: true, userId: decoded.userId });
+    } catch (error) {
+        res.status(401).json({ success: false });
+    }
+});
+
+
+
+
+
 app.listen(port, () => {
     console.log(`Server läuft auf http://localhost:${port}`);
 });

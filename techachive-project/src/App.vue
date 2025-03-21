@@ -10,7 +10,11 @@
           <router-link to="/mitschriften" class="link">Mitschriften</router-link>
           <router-link to="/contacts" class="link">About</router-link>
           <router-link to="/faecher" class="link">faecher</router-link> 
-          <router-link to="/angebot" class="link">Angebot</router-link>        
+          <router-link to="/angebot" class="link">Angebot</router-link>      
+          <router-link to="/login" class="link">Login</router-link>    
+          <router-link to="/register" class="link">Register</router-link>        
+    
+  
         </div>
       </div>
     </nav>
@@ -24,6 +28,7 @@
 export default {
   name: 'App',
 };
+
 </script>
 
 <style>
@@ -84,18 +89,15 @@ nav {
   border-bottom: 2px solid #ff9d87;
 }
 
-/* Responsive Design */
 @media (max-width: 768px) {
   .menu {
     flex-direction: column;
     align-items: flex-start;
   }
-
   .menu_links {
     margin-top: 10px;
     gap: 15px;
   }
-
   .link {
     font-size: 14px;
   }

@@ -41,55 +41,55 @@ export default {
     };
   },
   methods: {
-    // Lade die Themen für Mathematik
-    async ladeThemen() {
-      this.loading = true;
-      this.errorMessage = null;
-      try {
-        const response = await fetch('http://localhost:3000/themen/1'); // Hier gehe ich davon aus, dass 1 die ID für Mathematik ist
-        if (!response.ok) {
-          throw new Error('Fehler beim Laden der Themen');
-        }
-        const themen = await response.json();
-        this.themen = themen;
-      } catch (error) {
-        this.errorMessage = error.message;
-      } finally {
-        this.loading = false;
+  // Lade die Themen für Mathematik
+  async ladeThemen() {
+    this.loading = true;
+    this.errorMessage = null;
+    try {
+      const response = await fetch('http://localhost:3000/themen/1'); // Hier gehe ich davon aus, dass 1 die ID für Mathematik ist
+      if (!response.ok) {
+        throw new Error('Fehler beim Laden der Themen');
       }
-    },
-
-    // Lade die Materialien basierend auf dem ausgewählten Thema
-    async ladeMaterialien() {
-      if (!this.selectedThema) return;
-
-      this.loading = true;
-      this.errorMessage = null;
-      try {
-        // Beispiel-Daten (können durch eine API-Abfrage ersetzt werden)
-        const materialien = [
-          { id: 1, name: "Übung 1", typ: "Übung", link: "/materialen/B1-Lineare-Funktionen-und-Gleichungen.pdf", themaId: 1 },
-          { id: 2, name: "Theorieblatt", typ: "Theorie", link: "", themaId: 2 },
-        ];
-
-        // Filtere die Materialien basierend auf dem ausgewählten Thema
-        this.materialien = materialien.filter(material => material.themaId === this.selectedThema);
-      } catch (error) {
-        this.errorMessage = error.message;
-      } finally {
-        this.loading = false;
-      }
-    },
-
-    // Öffne die PDF-Datei in einem neuen Tab
-    oeffnePDF(link) {
-      if (link) {
-        window.open(link, '_blank');
-      } else {
-        this.errorMessage = "Keine Datei verfügbar.";
-      }
-    },
+      const themen = await response.json();
+      this.themen = themen;
+    } catch (error) {
+      this.errorMessage = error.message;
+    } finally {
+      this.loading = false;
+    }
   },
+
+  // Lade die Materialien basierend auf dem ausgewählten Thema
+  async ladeMaterialien() {
+    if (!this.selectedThema) return;
+
+    this.loading = true;
+    this.errorMessage = null;
+    try {
+      // Beispiel-Daten (können durch eine API-Abfrage ersetzt werden)
+      const materialien = [
+        { id: 1, name: "Übung 1", typ: "Übung", link: "/materialen/Lineare_Funktionen.pdf", themaId: 1 },
+        { id: 2, name: "Theorieblatt", typ: "Theorie", link: "", themaId: 2 },
+      ];
+
+      // Filtere die Materialien basierend auf dem ausgewählten Thema
+      this.materialien = materialien.filter(material => material.themaId === this.selectedThema);
+    } catch (error) {
+      this.errorMessage = error.message;
+    } finally {
+      this.loading = false;
+    }
+  },
+
+  // Öffne die PDF-Datei in einem neuen Tab
+  oeffnePDF(link) {
+    if (link) {
+      window.open(link, '_blank');
+    } else {
+      this.errorMessage = "Keine Datei verfügbar.";
+    }
+  }
+},
   mounted() {
     this.ladeThemen(); // Lade die Themen beim ersten Laden der Seite
   },
