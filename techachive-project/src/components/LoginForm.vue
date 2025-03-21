@@ -1,8 +1,6 @@
 <script setup>
 import { ref } from 'vue';
 import { defineEmits } from 'vue';
-import {toggleRegister, showRegister} from "../registerHelper.js"
-
 
 const username = ref('');
 const password = ref('');
@@ -82,29 +80,12 @@ function startChat(user) {
 </script>
 
 <template>
-  <div class="background">
-    <div class="shape"></div>
-    <div class="shape"></div>
-  </div>
-
-  <form @submit.prevent="login">
-    <h3>Login Here</h3>
-
-    <label for="username">Username</label>
-    <input v-model="username" type="text" placeholder="Email or Phone" id="username">
-
-    <label for="password">Password</label>
-    <input v-model="password" type="password" placeholder="Password" id="password">
-
+  <div class="login-container">
+    <h1>Login</h1>
+    <input v-model="username" type="text" placeholder="Benutzername">
+    <input v-model="password" type="password" placeholder="Passwort">
+    <button @click="login">Login</button>
     
-    <!-- Anmelde- und Registrierungsbuttons -->
-    <button @click="toggleRegister">
-      {{ showRegister ? 'Zur Anmeldung' : 'Zur Registrierung' }}
-    </button>
-
-
-    <button type="submit">Log In</button>
-
     <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
 
     <!-- Benutzerliste nach erfolgreichem Login -->
@@ -120,40 +101,36 @@ function startChat(user) {
     <!-- Chat-Anzeige, wenn ein Benutzer ausgewählt wurde -->
     <div v-if="selectedUser">
       <h3>Chat mit: {{ selectedUser.username }}</h3>
+      <!-- Hier könnte der Chat-Container oder Nachrichten angezeigt werden -->
       <div class="chat-container">
         <p>Chat mit {{ selectedUser.username }} wird angezeigt...</p>
       </div>
     </div>
-  </form>
+  </div>
 </template>
 
 <style scoped>
-/*
 
-.social {
-  margin-top: 30px;
+.login-container {
   display: flex;
+  flex-direction: column;
+  width: 300px;
+  margin: auto;
+  margin-top: 100px;
+
 }
 
-.social div {
-  background-color: rgba(255, 255, 255, 0.27);
-  color: #eaf0fb;
-  text-align: center;
-  width: 150px;
-  border-radius: 3px;
-  padding: 5px 10px 10px 5px;
+input, button {
+  margin-bottom: 10px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
 }
 
-.social div:hover {
-  background-color: rgba(255, 255, 255, 0.47);
-}
-
-.social .fb {
-  margin-left: 25px;
-}
-
-.social i {
-  margin-right: 4px;
+button {
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
 }
 
 .error {
@@ -170,10 +147,12 @@ li {
   cursor: pointer;
   border: 1px solid #ddd;
   margin: 5px 0;
+  color: white;
 }
 
 li:hover {
-  background-color: #f0f0f0;
+  color: red;
+
 }
 
 .chat-container {
@@ -181,5 +160,6 @@ li:hover {
   padding: 10px;
   border: 1px solid #ddd;
   border-radius: 5px;
-} */
+  background-color: white;
+}
 </style>
