@@ -17,5 +17,5 @@ CREATE TABLE user_activities (
     id SERIAL PRIMARY KEY,
     user_id INT REFERENCES users(id) ON DELETE CASCADE,
     activity_type VARCHAR(50) NOT NULL,
-    activity_time TIMESTAMP DEFAULT NOW()
+    activity_time TIMESTAMP DEFAULT NOW() ..
 );
