@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from 'vue';
+import {toggleRegister, showRegister} from "../registerHelper.js"
 
 const username = ref('');
 const email = ref('');
@@ -17,65 +18,48 @@ async function register() {
             password: password.value
         }),
     });
-
-    if (response.ok) {
-        const result = await response.json();
-        if (result.success) {
-            successMessage.value = 'Registrierung erfolgreich!';
-            errorMessage.value = '';
-        } else {
-            errorMessage.value = 'Fehler: ' + result.message;
-            successMessage.value = '';
-        }
+    const result = await response.json();
+    if (result.success) {
+        successMessage.value = 'Registrierung erfolgreich!';
+        errorMessage.value = '';
     } else {
-        errorMessage.value = 'Fehler: ' + response.statusText;
+        errorMessage.value = 'Fehler: ' + result.message;
         successMessage.value = '';
     }
 }
-
 </script>
 
 <template>
-  <div class="register-container">
-    <h1>Registrierung</h1>
-    <input v-model="username" type="text" placeholder="Benutzername">
-    <input v-model="email" type="email" placeholder="E-Mail">
-    <input v-model="password" type="password" placeholder="Passwort">
-    <button @click="register">Registrieren</button>
-    
+  <div class="background">
+    <div class="shape"></div>
+    <div class="shape"></div>
+  </div>
+
+  <form @submit.prevent="register">
+    <h3>Registrierung</h3>
+
+    <label for="username">Benutzername</label>
+    <input v-model="username" type="text" placeholder="Benutzername" id="username">
+
+    <label for="email">E-Mail</label>
+    <input v-model="email" type="email" placeholder="E-Mail" id="email">
+
+    <label for="password">Passwort</label>
+    <input v-model="password" type="password" placeholder="Passwort" id="password">
+
+    <!-- Anmelde- und Registrierungsbuttons -->
+  <button @click="toggleRegister">
+      {{ showRegister ? 'Zur Anmeldung' : 'Zur Registrierung' }}
+    </button>
+
+    <button type="submit">Registrieren</button>
+
     <p v-if="successMessage" class="success">{{ successMessage }}</p>
     <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
-  </div>
+  </form>
 </template>
 
 <style scoped>
 
-.register-container {
-  display: flex;
-  flex-direction: column;
-  width: 300px;
-  margin: auto;
-  margin-top: 100px;
-}
 
-input, button {
-  margin-bottom: 10px;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-}
-
-button {
-  background-color: #007bff;
-  color: white;
-  cursor: pointer;
-}
-
-.success {
-  color: green;
-}
-
-.error {
-  color: red;
-}
 </style>
