@@ -288,23 +288,9 @@ app.get('/validateToken', (req, res) => {
 
   
   // API-Endpunkt für Materialien
-  app.get('/api/materialien', async (req, res) => {
-    try {
-      // Datenbankabfrage, um alle Materialien zu erhalten
-      const query = 'SELECT * FROM materialien'; // Passe den Tabellennamen an
-      const result = await pool.query(query);
-  
-      // Sende die Materialien als JSON materialien
-      res.json(result.rows);
-    } catch (err) {
-      console.error('Fehler bei der Datenbankabfrage:', err);
-      res.status(500).json({ error: 'Fehler beim Laden der Materialien' });
-    }
-  });
-
   const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-      cb(null, 'uploads/'); // Speichert Dateien im Ordner "uploads/"
+      cb(null, 'uploads/');
     },
     filename: (req, file, cb) => {
       cb(null, Date.now() + path.extname(file.originalname));
@@ -313,32 +299,61 @@ app.get('/validateToken', (req, res) => {
   
   const upload = multer({ storage });
   
-  // Simulierte Material-Datenbank
-  let materialien = [];
+  // **Material in Datenbank speichern**
+  app.post('/api/materialien', upload.single('datei'), async (req, res) => {
+    console.log('📥 Eingehender Typ:', req.body.typ); // Debugging
+    
+    try {
+      const { name, thema_id, typ } = req.body;
+      if (!name || !thema_id || !typ || !req.file) {
+        return res.status(400).json({ error: 'Fehlende Felder!' });
+      }
   
-  // API-Endpunkt für Material-Upload
-  app.post('/api/materialien', upload.single('datei'), (req, res) => {
-    if (!req.body.name || !req.body.typ || !req.file) {
-      return res.status(400).send('Fehlende Felder!');
+      const validTypes = ['Übung', 'Theorie', 'Video'];
+  
+      // Typ-Wert bereinigen (Leerzeichen entfernen, Großbuchstaben fixen)
+      let cleanedTyp = typ.trim();
+      cleanedTyp = cleanedTyp.charAt(0).toUpperCase() + cleanedTyp.slice(1).toLowerCase();
+  
+      console.log('🔍 Bereinigter Typ:', cleanedTyp);
+  
+      if (!validTypes.includes(cleanedTyp)) {
+        return res.status(400).json({ error: `Ungültiger Typ! Erlaubt sind: ${validTypes.join(', ')}` });
+      }
+  
+      const dateipfad = `http://localhost:3000/uploads/${req.file.filename}`;
+  
+      const query = `
+        INSERT INTO materialien (name, typ, dateipfad, thema_id) 
+        VALUES ($1, $2, $3, $4) 
+        RETURNING *`;
+      const values = [name, cleanedTyp, dateipfad, thema_id];
+  
+      const result = await pool.query(query, values);
+      console.log('✅ Material gespeichert:', result.rows[0]);
+  
+      res.json(result.rows[0]);
+    } catch (err) {
+      console.error('❌ Fehler:', err);
+      res.status(500).json({ error: 'Fehler beim Speichern in der Datenbank' });
     }
-  
-    const newMaterial = {
-      id: materialien.length + 1,
-      name: req.body.name,
-      typ: req.body.typ,
-      dateipfad: `http://localhost:3000/uploads/${req.file.filename}`,
-    };
-  
-    materialien.push(newMaterial);
-    res.json(newMaterial);
   });
   
-  // API-Endpunkt zum Abrufen von Materialien
-  app.get('/api/materialien', (req, res) => {
-    res.json(materialien);
+  
+  
+  // **Alle Materialien aus der Datenbank abrufen**
+  app.get('/api/materialien', async (req, res) => {
+    try {
+      const query = 'SELECT * FROM materialien';
+      const result = await pool.query(query);
+      res.json(result.rows);
+    } catch (err) {
+      console.error('Fehler bei der Datenbankabfrage:', err);
+      res.status(500).json({ error: 'Fehler beim Laden der Materialien' });
+    }
   });
   
-  // Statische Datei-Ausgabe für den Upload-Ordner
+  // Statische Datei-Ausgabe für hochgeladene Dateien
   app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 app.listen(port, () => {
