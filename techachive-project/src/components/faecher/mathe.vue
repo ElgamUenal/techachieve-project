@@ -13,18 +13,48 @@
     <!-- Ladeanzeige -->
     <div v-if="loading" class="loader">Lade Daten...</div>
 
-    <!-- Liste der Materialien -->
+    <!-- Materialien Tabelle -->
     <h2><i class="fas fa-folder"></i> Materialien</h2>
-    <ul>
-      <li v-for="material in materialien" :key="material.id" @click="oeffnePDF(material.dateipfad)">
-        <i class="fas fa-file-alt"></i> {{ material.name }} - {{ material.typ }}
-      </li>
-    </ul>
+    <table v-if="materialien.length > 0">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Typ</th>
+          <th>Aktion</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="material in materialien" :key="material.id">
+          <td>{{ material.name }}</td>
+          <td>{{ material.typ }}</td>
+          <td>
+            <button @click="oeffnePDF(material.dateipfad)">
+              <i class="fas fa-eye"></i> Öffnen
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
 
     <!-- Fehlermeldung, falls keine Daten gefunden wurden -->
     <div v-if="errorMessage" class="error-message">
       <i class="fas fa-exclamation-triangle"></i> {{ errorMessage }}
     </div>
+
+    <!-- Formular zum Hochladen von Materialien -->
+    <h3><i class="fas fa-upload"></i> Neues Material hochladen</h3>
+    <form @submit.prevent="hochladenMaterial" enctype="multipart/form-data">
+      <label for="materialName">Name des Materials:</label>
+      <input type="text" id="materialName" v-model="newMaterial.name" required />
+
+      <label for="materialType">Typ des Materials:</label>
+      <input type="text" id="materialType" v-model="newMaterial.typ" required />
+
+      <label for="file">Datei hochladen:</label>
+      <input type="file" id="file" @change="handleFileUpload" required />
+
+      <button type="submit" :disabled="loading">Hochladen</button>
+    </form>
   </div>
 </template>
 
@@ -38,6 +68,11 @@ export default {
       selectedThema: null, // Das ausgewählte Thema
       loading: false, // Ladezustand für Daten
       errorMessage: null, // Fehlernachricht bei fehlgeschlagenem API-Aufruf
+      newMaterial: { // Neues Material
+        name: '',
+        typ: '',
+        dateipfad: null, // Hier speichern wir die Datei, wenn sie hochgeladen wird
+      },
     };
   },
   methods: {
@@ -61,52 +96,86 @@ export default {
 
     // Lade die Materialien basierend auf dem ausgewählten Thema
     async ladeMaterialien() {
-      if (!this.selectedThema) return;
+  if (!this.selectedThema) return;
 
-      console.log('Lade Materialien für Thema:', this.selectedThema);
+  console.log('Lade Materialien für Thema:', this.selectedThema);
 
-      this.loading = true;
-      this.errorMessage = null;
-      try {
-        const response = await fetch('http://localhost:3000/api/materialien');
-        if (!response.ok) {
-          throw new Error(`Fehler beim Laden der Materialien: ${response.status} ${response.statusText}`);
-        }
-        const materialien = await response.json();
+  this.loading = true;
+  this.errorMessage = null;
+  try {
+    const response = await fetch('http://localhost:3000/api/materialien');
+    if (!response.ok) {
+      throw new Error(`Fehler beim Laden der Materialien: ${response.status} ${response.statusText}`);
+    }
+    const materialien = await response.json();
 
-        console.log('Geladene Materialien:', materialien); // Alle Materialien ausgeben
+    console.log('Geladene Materialien:', materialien); // Alle Materialien ausgeben
 
-        // Überprüfe die Struktur der Materialien
-        materialien.forEach(material => {
-          console.log('Material:', material);  // Material im Detail ausgeben
-        });
+    // Jetzt verwenden wir 'thema_id' anstelle von 'themaId'
+    this.materialien = materialien.filter(material => material.thema_id === Number(this.selectedThema)); // Nur Materiale mit thema_id filtern
 
-        // Jetzt verwenden wir 'thema_id' anstelle von 'themaId'
-        this.materialien = materialien.filter(material => {
-          console.log('Vergleiche thema_id:', material.thema_id, 'mit selectedThema:', this.selectedThema);
-          return material.thema_id && Number(material.thema_id) === Number(this.selectedThema);  // Nur Materiale mit thema_id filtern
-        });
-
-        console.log('Gefilterte Materialien:', this.materialien);
-      } catch (error) {
-        console.error('Fehler:', error);
-        this.errorMessage = error.message;
-      } finally {
-        this.loading = false;
-      }
-    },
-
+    console.log('Gefilterte Materialien:', this.materialien);
+  } catch (error) {
+    console.error('Fehler:', error);
+    this.errorMessage = error.message;
+  } finally {
+    this.loading = false;
+  }
+},
     // Öffne die PDF-Datei in einem neuen Tab
     oeffnePDF(dateipfad) {
       if (dateipfad) {
         console.log('Dateipfad zum Öffnen:', dateipfad);  // Zum Debuggen den Dateipfad in der Konsole anzeigen
-
-        // Öffne den Dateipfad direkt im neuen Tab
         window.open(dateipfad, '_blank');
       } else {
         this.errorMessage = "Keine Datei verfügbar.";
       }
+    },
+
+    // Handle File Upload
+    handleFileUpload(event) {
+      const file = event.target.files[0];
+      if (file) {
+        this.newMaterial.dateipfad = file; // Setze die Datei in das Material
+      }
+    },
+
+    // Material hochladen
+    async hochladenMaterial() {
+  if (!this.newMaterial.name || !this.newMaterial.typ || !this.newMaterial.dateipfad || !this.selectedThema) {
+    this.errorMessage = 'Alle Felder müssen ausgefüllt sein.';
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append('name', this.newMaterial.name);
+  formData.append('typ', this.newMaterial.typ);
+  formData.append('thema_id', this.selectedThema); // Füge die thema_id hinzu
+  formData.append('datei', this.newMaterial.dateipfad);
+
+  this.loading = true;
+  try {
+    const response = await fetch('http://localhost:3000/api/materialien', {
+      method: 'POST',
+      body: formData,
+    });
+
+    if (!response.ok) {
+      throw new Error('Fehler beim Hochladen des Materials');
     }
+
+    const material = await response.json();
+    this.materialien.push(material); // Füge das hochgeladene Material der Liste hinzu
+
+    // Reset form
+    this.newMaterial = { name: '', typ: '', dateipfad: null };
+  } catch (error) {
+    console.error('Fehler:', error);
+    this.errorMessage = error.message;
+  } finally {
+    this.loading = false;
+  }
+}
   },
   mounted() {
     this.ladeThemen(); // Lade die Themen beim ersten Laden der Seite
@@ -118,7 +187,7 @@ export default {
 /* Styling für das Layout */
 body {
   color: white;
-  background-color: #f4f4f9; /* Heller Hintergrund */
+  background-color: #f4f4f9;
   font-family: 'Arial', sans-serif;
 }
 
@@ -138,7 +207,7 @@ h1, h2 {
 }
 
 h1 i, h2 i {
-  margin-right: 8px; /* Abstand für das Icon */
+  margin-right: 8px;
 }
 
 label {
@@ -148,7 +217,7 @@ label {
   font-size: 18px;
 }
 
-select {
+select, input[type="text"], input[type="file"] {
   margin: 10px 0;
   padding: 12px;
   width: 100%;
@@ -159,7 +228,7 @@ select {
   color: white;
 }
 
-select:focus {
+select:focus, input[type="text"]:focus, input[type="file"]:focus {
   outline: none;
   border: 2px solid #4CAF50;
 }
@@ -194,7 +263,6 @@ ul li:active {
   background-color: #95a5a6;
 }
 
-/* Ladeanzeige */
 .loader {
   text-align: center;
   color: #3498db;
@@ -202,7 +270,6 @@ ul li:active {
   font-weight: bold;
 }
 
-/* Fehlermeldung */
 .error-message {
   color: #e74c3c;
   background-color: #f9d6d5;

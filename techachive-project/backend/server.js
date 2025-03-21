@@ -1,10 +1,18 @@
-// Statt require()
 import express from 'express';
 import cors from 'cors';
 import pkg from 'pg';  // Standardimport für CommonJS-Module
 const { Pool } = pkg;  // Extrahiere den Pool aus dem Standardimport
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import multer from 'multer';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+import fs from 'fs';
+import dotenv from 'dotenv';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 
 const app = express();
@@ -286,13 +294,52 @@ app.get('/validateToken', (req, res) => {
       const query = 'SELECT * FROM materialien'; // Passe den Tabellennamen an
       const result = await pool.query(query);
   
-      // Sende die Materialien als JSON
+      // Sende die Materialien als JSON materialien
       res.json(result.rows);
     } catch (err) {
       console.error('Fehler bei der Datenbankabfrage:', err);
       res.status(500).json({ error: 'Fehler beim Laden der Materialien' });
     }
   });
+
+  const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+      cb(null, 'uploads/'); // Speichert Dateien im Ordner "uploads/"
+    },
+    filename: (req, file, cb) => {
+      cb(null, Date.now() + path.extname(file.originalname));
+    },
+  });
+  
+  const upload = multer({ storage });
+  
+  // Simulierte Material-Datenbank
+  let materialien = [];
+  
+  // API-Endpunkt für Material-Upload
+  app.post('/api/materialien', upload.single('datei'), (req, res) => {
+    if (!req.body.name || !req.body.typ || !req.file) {
+      return res.status(400).send('Fehlende Felder!');
+    }
+  
+    const newMaterial = {
+      id: materialien.length + 1,
+      name: req.body.name,
+      typ: req.body.typ,
+      dateipfad: `http://localhost:3000/uploads/${req.file.filename}`,
+    };
+  
+    materialien.push(newMaterial);
+    res.json(newMaterial);
+  });
+  
+  // API-Endpunkt zum Abrufen von Materialien
+  app.get('/api/materialien', (req, res) => {
+    res.json(materialien);
+  });
+  
+  // Statische Datei-Ausgabe für den Upload-Ordner
+  app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 app.listen(port, () => {
     console.log(`Server läuft auf http://localhost:${port}`);
