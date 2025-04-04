@@ -16,13 +16,17 @@
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
+    "googleapis": "^148.0.0",
     "gsap": "^3.12.7",
     "jsonwebtoken": "^9.0.2",
     "multer": "^1.4.5-lts.2",
     "parallax-js": "^3.1.0",
+    "passport": "^0.7.0",
+    "passport-google-oauth20": "^2.0.0",
     "pg": "^8.14.0",
     "vue": "^3.5.13",
-    "vue-router": "^4.5.0"
+    "vue-router": "^4.5.0",
+    "vue3-google-login": "^2.0.33"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.2.1",

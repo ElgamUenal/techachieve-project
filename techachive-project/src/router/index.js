@@ -7,6 +7,7 @@ import Mathe from  '@/components/faecher/mathe.vue';
 import angebot from '@/components/angebot.vue';
 import RegisterForm from '@/components/RegisterForm.vue';
 import LoginForm from '@/components/LoginForm.vue';
+import Kalender from '@/components/Kalender.vue';
 const routes = [
   { path: '/', component: HelloWorld }, // HelloWorld wird nur für die Startseite angezeigt
   { path: '/mitschriften', component: Mitschriften },
@@ -16,10 +17,7 @@ const routes = [
   {path: '/angebot', component: angebot },
   {path: '/register', component: RegisterForm },
   {path: '/login', component: LoginForm },
-
-
-
-
+  {path: '/kalender', component: Kalender },
 ];
 
 const router = createRouter({

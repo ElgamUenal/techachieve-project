@@ -13,7 +13,7 @@
           <router-link to="/angebot" class="link">Angebot</router-link>      
           <router-link to="/login" class="link">Login</router-link>    
           <router-link to="/register" class="link">Register</router-link>        
-    
+          <router-link to="/kalender" class="link">Kalender</router-link>        
   
         </div>
       </div>
